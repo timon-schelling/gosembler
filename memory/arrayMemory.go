@@ -1,5 +1,7 @@
 package memory
 
+import "sort"
+
 type SimpleArrayMemory struct {
 	backend []bool
 }
@@ -30,8 +32,11 @@ func (m SimpleArrayMemory) Write(address Address, value []Bit) {
 	}
 }
 
-func (SimpleArrayMemory) Navigator() Navigator {
-	panic("implement me")
+func (m SimpleArrayMemory) Navigator() Navigator {
+	return SimpleArrayMemoryNavigator{
+		memory:  m,
+		current: 0,
+	}
 }
 
 type SimpleArrayMemoryNavigator struct {
@@ -51,12 +56,25 @@ func (mn SimpleArrayMemoryNavigator) Back() {
 	mn.current--
 }
 
-func (mn SimpleArrayMemoryNavigator) Next() Bit {
-	mn.memory.Read(mn.current, 1)
+func (mn SimpleArrayMemoryNavigator) Next() (r Bit) {
+	r = mn.memory.Read(mn.current, 1)[0]
 	mn.current++
+	return r
+}
+
+func (mn SimpleArrayMemoryNavigator) ReadNext(length uint64) (r []Bit) {
+	r = mn.memory.Read(mn.current, length)
+	mn.current += Address(length)
+	return r
 }
 
 func (mn SimpleArrayMemoryNavigator) Last() Bit {
 	mn.current--
-	mn.memory.Read(mn.current, 1)
+	return mn.memory.Read(mn.current, 1)[0]
+}
+
+func (mn SimpleArrayMemoryNavigator) ReadLast(length uint64) (r []Bit) {
+	r = sort.Reverse(mn.memory.Read(mn.current-Address(length), length))
+	mn.current -= Address(length)
+	return r
 }
