@@ -13,6 +13,7 @@ type Memory interface {
 type Navigator interface {
 	Jump(address Address)
 	Skip()
+	Back()
 	Next() Bit
 	Last() Bit
 }
