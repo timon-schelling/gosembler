@@ -26,7 +26,7 @@ func (c Cpu) Load(source []memory.Bit) {
 func (c Cpu) running() {
 	memoryNavigator := c.memory.Navigator()
 	for c.run {
-
+		optCode := memoryNavigator.
 	}
 }
 
