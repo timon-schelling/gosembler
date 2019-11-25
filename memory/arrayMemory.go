@@ -10,24 +10,24 @@ func NewSimpleArrayMemory() SimpleArrayMemory {
 	return SimpleArrayMemory{backend: []bool{}}
 }
 
-func (m SimpleArrayMemory) Read(address Address, length uint64) (r []Bit) {
+func (m SimpleArrayMemory) Read(address uint, length uint64) (r []Bit) {
 	for i := uint64(0); i < length; i++ {
 		r = append(r, Bit(m.backend[i+uint64(address)]))
 	}
 	return r
 }
 
-func (m SimpleArrayMemory) Write(address Address, value []Bit) {
+func (m SimpleArrayMemory) Write(address uint, value []Bit) {
 	valueLength := len(value)
 	for len(m.backend) < valueLength {
 		m.backend = append(m.backend, false)
 	}
 	for i := 0; i < valueLength; i++ {
-		currentAddress := Address(i) + address
-		if currentAddress == Address(len(m.backend)) {
+		currentuint := uint(i) + address
+		if currentuint == uint(len(m.backend)) {
 			m.backend = append(m.backend, bool(value[i]))
 		} else {
-			m.backend[currentAddress] = bool(value[i])
+			m.backend[currentuint] = bool(value[i])
 		}
 	}
 }
@@ -41,10 +41,10 @@ func (m SimpleArrayMemory) Navigator() Navigator {
 
 type SimpleArrayMemoryNavigator struct {
 	memory  SimpleArrayMemory
-	current Address
+	current uint
 }
 
-func (mn SimpleArrayMemoryNavigator) Jump(address Address) {
+func (mn SimpleArrayMemoryNavigator) Jump(address uint) {
 	mn.current = address
 }
 
@@ -64,7 +64,7 @@ func (mn SimpleArrayMemoryNavigator) Next() (r Bit) {
 
 func (mn SimpleArrayMemoryNavigator) ReadNext(length uint64) (r []Bit) {
 	r = mn.memory.Read(mn.current, length)
-	mn.current += Address(length)
+	mn.current += uint(length)
 	return r
 }
 
@@ -74,7 +74,10 @@ func (mn SimpleArrayMemoryNavigator) Last() Bit {
 }
 
 func (mn SimpleArrayMemoryNavigator) ReadLast(length uint64) (r []Bit) {
-	r = sort.Reverse(mn.memory.Read(mn.current-Address(length), length))
-	mn.current -= Address(length)
+	//rs := BitSlice{bits: mn.memory.Read(mn.current-uint(length), length)}
+	//r = sort.Reverse(rs).(BitSlice).bits
+	rs := []bool{true, false}
+	t := sort.Reverse(BoolSlice(rs))
+	mn.current -= uint(length)
 	return r
 }

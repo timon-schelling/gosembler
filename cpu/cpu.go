@@ -4,8 +4,8 @@ import "github.com/timon-schelling/gosembler/memory"
 
 type Cpu struct {
 	memory memory.Memory
-	exp    memory.Address
-	sp     memory.Address
+	exp    memory.uint
+	sp     memory.uint
 	run    bool
 	err    bool
 	carry  bool
