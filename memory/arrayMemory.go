@@ -10,24 +10,24 @@ func NewSimpleArrayMemory() SimpleArrayMemory {
 	return SimpleArrayMemory{backend: []bool{}}
 }
 
-func (m SimpleArrayMemory) Read(address uint, length uint64) (r []Bit) {
-	for i := uint64(0); i < length; i++ {
-		r = append(r, Bit(m.backend[i+uint64(address)]))
+func (m SimpleArrayMemory) Read(address uint, length uint) (r []bool) {
+	for i := uint(0); i < length; i++ {
+		r = append(r, m.backend[i+address])
 	}
 	return r
 }
 
-func (m SimpleArrayMemory) Write(address uint, value []Bit) {
-	valueLength := len(value)
-	for len(m.backend) < valueLength {
+func (m SimpleArrayMemory) Write(address uint, values []bool) {
+	valueLength := uint(len(values))
+	for uint(len(m.backend)) < valueLength {
 		m.backend = append(m.backend, false)
 	}
-	for i := 0; i < valueLength; i++ {
-		currentuint := uint(i) + address
-		if currentuint == uint(len(m.backend)) {
-			m.backend = append(m.backend, bool(value[i]))
+	for i := uint(0); i < valueLength; i++ {
+		currentBit := uint(i) + address
+		if currentBit == uint(len(m.backend)) {
+			m.backend = append(m.backend, bool(values[i]))
 		} else {
-			m.backend[currentuint] = bool(value[i])
+			m.backend[currentBit] = bool(values[i])
 		}
 	}
 }
@@ -56,28 +56,25 @@ func (mn SimpleArrayMemoryNavigator) Back() {
 	mn.current--
 }
 
-func (mn SimpleArrayMemoryNavigator) Next() (r Bit) {
+func (mn SimpleArrayMemoryNavigator) Next() (r bool) {
 	r = mn.memory.Read(mn.current, 1)[0]
 	mn.current++
 	return r
 }
 
-func (mn SimpleArrayMemoryNavigator) ReadNext(length uint64) (r []Bit) {
+func (mn SimpleArrayMemoryNavigator) ReadNext(length uint) (r []bool) {
 	r = mn.memory.Read(mn.current, length)
-	mn.current += uint(length)
+	mn.current += length
 	return r
 }
 
-func (mn SimpleArrayMemoryNavigator) Last() Bit {
+func (mn SimpleArrayMemoryNavigator) Last() bool {
 	mn.current--
 	return mn.memory.Read(mn.current, 1)[0]
 }
 
-func (mn SimpleArrayMemoryNavigator) ReadLast(length uint64) (r []Bit) {
-	//rs := BitSlice{bits: mn.memory.Read(mn.current-uint(length), length)}
-	//r = sort.Reverse(rs).(BitSlice).bits
-	rs := []bool{true, false}
-	t := sort.Reverse(BoolSlice(rs))
+func (mn SimpleArrayMemoryNavigator) ReadLast(length uint64) (r []bool) {
+	r := sort.Reverse(mn.memory.Read(mn.current-length, length))
 	mn.current -= uint(length)
 	return r
 }

@@ -4,8 +4,8 @@ import "github.com/timon-schelling/gosembler/memory"
 
 type Cpu struct {
 	memory memory.Memory
-	exp    memory.uint
-	sp     memory.uint
+	exp    uint
+	sp     uint
 	run    bool
 	err    bool
 	carry  bool
@@ -19,14 +19,14 @@ func (c Cpu) NewCpu(memory memory.Memory) Cpu {
 	}
 }
 
-func (c Cpu) Load(source []memory.Bit) {
+func (c Cpu) Load(source []bool) {
 	c.memory.Write(0, source)
 }
 
 func (c Cpu) running() {
 	memoryNavigator := c.memory.Navigator()
 	for c.run {
-		optCode := memoryNavigator.
+		optCode := memoryNavigator.ReadNext(8)
 	}
 }
 

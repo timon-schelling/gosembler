@@ -4,7 +4,7 @@ import (
 	"github.com/timon-schelling/gosembler/memory"
 )
 
-func toBoolArray(s string) (r []memory.Bit) {
+func toBoolArray(s string) (r []bool) {
 	for _, v := range s {
 		if v == '0' {
 			r = append(r, false)
