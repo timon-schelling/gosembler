@@ -1,6 +1,6 @@
-package converters
+package converter
 
-func boolsToBytes(t []bool) []byte {
+func BoolsToBytes(t []bool) []byte {
 	b := make([]byte, (len(t)+7)/8)
 	for i, x := range t {
 		if x {
@@ -10,7 +10,7 @@ func boolsToBytes(t []bool) []byte {
 	return b
 }
 
-func bytesToBools(b []byte) []bool {
+func BytesToBools(b []byte) []bool {
 	t := make([]bool, 8*len(b))
 	for i, x := range b {
 		for j := 0; j < 8; j++ {
