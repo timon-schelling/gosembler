@@ -45,103 +45,297 @@ func (c Cpu) running() {
 	for c.run {
 		c.exp = memoryNavigator.Address()
 		optCode := converter.BoolsToBytes(memoryNavigator.Read(8))[0]
-		c.doStep(optCode)
+		c.doStep(InstructionCode(optCode))
 	}
 }
 
-func (c Cpu) doStep(optCode byte) {
+type InstructionCode int
+
+const (
+	HLT InstructionCode = iota
+
+	MOV_REG_TO_REG
+	MOV_ADDRESS_TO_REG
+	MOV_REGADDRESS_TO_REG
+	MOV_REG_TO_ADDRESS
+	MOV_REG_TO_REGADDRESS
+	MOV_NUMBER_TO_REG
+	MOV_NUMBER_TO_ADDRESS
+	MOV_NUMBER_TO_REGADDRESS
+
+	ADD_REG_TO_REG
+	ADD_REGADDRESS_TO_REG
+	ADD_ADDRESS_TO_REG
+	ADD_NUMBER_TO_REG
+
+	SUB_REG_FROM_REG
+	SUB_REGADDRESS_FROM_REG
+	SUB_ADDRESS_FROM_REG
+	SUB_NUMBER_FROM_REG
+
+	INC_REG
+
+	DEC_REG
+
+	CMP_REG_WITH_REG
+	CMP_REGADDRESS_WITH_REG
+	CMP_ADDRESS_WITH_REG
+	CMP_NUMBER_WITH_REG
+
+	JMP_REGADDRESS
+	JMP_ADDRESS
+
+	JC_REGADDRESS
+	JC_ADDRESS
+
+	JNC_REGADDRESS
+	JNC_ADDRESS
+
+	JZ_REGADDRESS
+	JZ_ADDRESS
+
+	JNZ_REGADDRESS
+	JNZ_ADDRESS
+
+	JA_REGADDRESS
+	JA_ADDRESS
+
+	JNA_REGADDRESS
+	JNA_ADDRESS
+
+	PUSH_REG
+	PUSH_REGADDRESS
+	PUSH_ADDRESS
+	PUSH_NUMBER
+
+	POP_REG
+
+	CALL_REGADDRESS
+	CALL_ADDRESS
+
+	RET
+
+	MUL_REG
+	MUL_REGADDRESS
+	MUL_ADDRESS
+	MUL_NUMBER
+
+	DIV_REG
+	DIV_REGADDRESS
+	DIV_ADDRESS
+	DIV_NUMBER
+
+	AND_REG_WITH_REG
+	AND_REGADDRESS_WITH_REG
+	AND_ADDRESS_WITH_REG
+	AND_NUMBER_WITH_REG
+
+	OR_REG_WITH_REG
+	OR_REGADDRESS_WITH_REG
+	OR_ADDRESS_WITH_REG
+	OR_NUMBER_WITH_REG
+
+	XOR_REG_WITH_REG
+	XOR_REGADDRESS_WITH_REG
+	XOR_ADDRESS_WITH_REG
+	XOR_NUMBER_WITH_REG
+
+	NOT_REG
+
+	SHL_REG_WITH_REG
+	SHL_REGADDRESS_WITH_REG
+	SHL_ADDRESS_WITH_REG
+	SHL_NUMBER_WITH_REG
+
+	SHR_REG_WITH_REG
+	SHR_REGADDRESS_WITH_REG
+	SHR_ADDRESS_WITH_REG
+	SHR_NUMBER_WITH_REG
+)
+
+func (c Cpu) doStep(optCode InstructionCode) {
 	switch optCode {
-	case 0:
+	case HLT:
 		c.execHlt()
 
-	case 1:
+	case MOV_REG_TO_REG:
 		c.execMovRegToReg()
-	case 2:
+	case MOV_ADDRESS_TO_REG:
 		c.execMovAddressToReg()
-	case 3:
+	case MOV_REGADDRESS_TO_REG:
 		c.execMovRegAddressToReg()
-	case 4:
+	case MOV_REG_TO_ADDRESS:
 		c.execMovRegToAddress()
-	case 5:
+	case MOV_REG_TO_REGADDRESS:
 		c.execMovRegToRegAddress()
-	case 6:
+	case MOV_NUMBER_TO_REG:
 		c.execMovNumberToReg()
-	case 7:
+	case MOV_NUMBER_TO_ADDRESS:
 		c.execMovNumberToAddress()
-	case 8:
+	case MOV_NUMBER_TO_REGADDRESS:
 		c.execMovNumberToRegAddress()
 
-	case 10:
+	case ADD_REG_TO_REG:
 		c.execAddRegToReg()
-	case 11:
+	case ADD_REGADDRESS_TO_REG:
 		c.execAddRegAddressToReg()
-	case 12:
+	case ADD_ADDRESS_TO_REG:
 		c.execAddAddressToReg()
-	case 13:
+	case ADD_NUMBER_TO_REG:
 		c.execAddNumberToReg()
 
-	case 14:
+	case SUB_REG_FROM_REG:
 		c.execSubRegFromReg()
-	case 15:
+	case SUB_REGADDRESS_FROM_REG:
 		c.execSubRegAddressFromReg()
-	case 16:
+	case SUB_ADDRESS_FROM_REG:
 		c.execSubAddressFromReg()
-	case 17:
+	case SUB_NUMBER_FROM_REG:
 		c.execSubNumberFromReg()
 
-	case 18:
+	case INC_REG:
 		c.execIncReg()
 
-	case 19:
+	case DEC_REG:
 		c.execDecReg()
 
-	case 20:
+	case CMP_REG_WITH_REG:
 		c.execCmpRegWithReg()
-	case 21:
+	case CMP_REGADDRESS_WITH_REG:
 		c.execCmpRegAddressWithReg()
-	case 22:
+	case CMP_ADDRESS_WITH_REG:
 		c.execCmpAddressWithReg()
-	case 23:
+	case CMP_NUMBER_WITH_REG:
 		c.execCmpNumberWithReg()
 
-	case 30:
-		c.execJmpToAddress()
-	case 31:
+	case JMP_REGADDRESS:
 		c.execJmpToRegAddress()
+	case JMP_ADDRESS:
+		c.execJmpToAddress()
 
-	case 32:
-		c.execJcToAddress()
-	case 33:
+	case JC_REGADDRESS:
 		c.execJcToRegAddress()
+	case JC_ADDRESS:
+		c.execJcToAddress()
 
-	case 34:
-		c.execJncToAddress()
-	case 35:
+	case JNC_REGADDRESS:
 		c.execJncToRegAddress()
+	case JNC_ADDRESS:
+		c.execJncToAddress()
 
-	case 36:
-		c.execJzToAddress()
-	case 37:
+	case JZ_REGADDRESS:
 		c.execJzToRegAddress()
+	case JZ_ADDRESS:
+		c.execJzToAddress()
 
-	case 38:
-		c.execJnzToAddress()
-	case 39:
+	case JNZ_REGADDRESS:
 		c.execJnzToRegAddress()
+	case JNZ_ADDRESS:
+		c.execJnzToAddress()
 
-	case 40:
-		c.execJaToAddress()
-	case 41:
+	case JA_REGADDRESS:
 		c.execJaToRegAddress()
+	case JA_ADDRESS:
+		c.execJaToAddress()
 
-	case 42:
-		c.execJnaToAddress()
-	case 43:
+	case JNA_REGADDRESS:
 		c.execJnaToRegAddress()
+	case JNA_ADDRESS:
+		c.execJnaToAddress()
+
+	case PUSH_REG:
+		c.execPushReg()
+	case PUSH_REGADDRESS:
+		c.execPushRegAddress()
+	case PUSH_ADDRESS:
+		c.execPushAddress()
+	case PUSH_NUMBER:
+		c.execPushNumber()
+
+	case POP_REG:
+		c.execPopReg()
+
+	case CALL_REGADDRESS:
+		c.execCallRegAddress()
+	case CALL_ADDRESS:
+		c.execCallAddress()
+
+	case RET:
+		c.execRet()
+
+	case MUL_REG:
+		c.execMulReg()
+	case MUL_REGADDRESS:
+		c.execMulRegAddress()
+	case MUL_ADDRESS:
+		c.execMulAddress()
+	case MUL_NUMBER:
+		c.execMulNumber()
+
+	case DIV_REG:
+		c.execDivReg()
+	case DIV_REGADDRESS:
+		c.execDivRegAddress()
+	case DIV_ADDRESS:
+		c.execDivAddress()
+	case DIV_NUMBER:
+		c.execDivNumber()
+
+	case AND_REG_WITH_REG:
+		c.execAndRegWithReg()
+	case AND_REGADDRESS_WITH_REG:
+		c.execAndRegAddressWithReg()
+	case AND_ADDRESS_WITH_REG:
+		c.execAndAddressWithReg()
+	case AND_NUMBER_WITH_REG:
+		c.execAndNumberWithReg()
+
+	case OR_REG_WITH_REG:
+		c.execOrRegWithReg()
+	case OR_REGADDRESS_WITH_REG:
+		c.execOrRegAddressWithReg()
+	case OR_ADDRESS_WITH_REG:
+		c.execAndAddressWithReg()
+	case OR_NUMBER_WITH_REG:
+		c.execAndNumberWithReg()
+
+	case XOR_REG_WITH_REG:
+		c.execXorRegWithReg()
+	case XOR_REGADDRESS_WITH_REG:
+		c.execXorRegAddressWithReg()
+	case XOR_ADDRESS_WITH_REG:
+		c.execXorAddressWithReg()
+	case XOR_NUMBER_WITH_REG:
+		c.execXorNumberWithReg()
+
+	case NOT_REG:
+		c.execNotReg()
+
+	case SHL_REG_WITH_REG:
+		c.execShlRegWithReg()
+	case SHL_REGADDRESS_WITH_REG:
+		c.execShlRegAddressWithReg()
+	case SHL_ADDRESS_WITH_REG:
+		c.execShlAddressWithReg()
+	case SHL_NUMBER_WITH_REG:
+		c.execShlNumberWithReg()
+
+	case SHR_REG_WITH_REG:
+		c.execShrRegWithReg()
+	case SHR_REGADDRESS_WITH_REG:
+		c.execShrRegAddressWithReg()
+	case SHR_ADDRESS_WITH_REG:
+		c.execShrAddressWithReg()
+	case SHR_NUMBER_WITH_REG:
+		c.execShrNumberWithReg()
 
 	default:
-		c.execHlt()
+		c.error()
 	}
+}
+
+func (c Cpu) error() {
+
 }
 
 //HLT
