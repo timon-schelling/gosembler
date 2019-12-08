@@ -85,7 +85,59 @@ func (c Cpu) doStep(optCode byte) {
 	case 15:
 		c.execSubRegAddressFromReg()
 	case 16:
+		c.execSubAddressFromReg()
 	case 17:
+		c.execSubNumberFromReg()
+
+	case 18:
+		c.execIncReg()
+
+	case 19:
+		c.execDecReg()
+
+	case 20:
+		c.execCmpRegWithReg()
+	case 21:
+		c.execCmpRegAddressWithReg()
+	case 22:
+		c.execCmpAddressWithReg()
+	case 23:
+		c.execCmpNumberWithReg()
+
+	case 30:
+		c.execJmpToAddress()
+	case 31:
+		c.execJmpToRegAddress()
+
+	case 32:
+		c.execJcToAddress()
+	case 33:
+		c.execJcToRegAddress()
+
+	case 34:
+		c.execJncToAddress()
+	case 35:
+		c.execJncToRegAddress()
+
+	case 36:
+		c.execJzToAddress()
+	case 37:
+		c.execJzToRegAddress()
+
+	case 38:
+		c.execJnzToAddress()
+	case 39:
+		c.execJnzToRegAddress()
+
+	case 40:
+		c.execJaToAddress()
+	case 41:
+		c.execJaToRegAddress()
+
+	case 42:
+		c.execJnaToAddress()
+	case 43:
+		c.execJnaToRegAddress()
 
 	default:
 		c.execHlt()
