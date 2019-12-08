@@ -1,7 +1,5 @@
 package memory
 
-import "sort"
-
 type SimpleArrayMemory struct {
 	backend []bool
 }
@@ -44,6 +42,10 @@ type SimpleArrayMemoryNavigator struct {
 	current uint
 }
 
+func (mn SimpleArrayMemoryNavigator) Address() uint {
+	return mn.current
+}
+
 func (mn SimpleArrayMemoryNavigator) Jump(address uint) {
 	mn.current = address
 }
@@ -62,19 +64,8 @@ func (mn SimpleArrayMemoryNavigator) Next() (r bool) {
 	return r
 }
 
-func (mn SimpleArrayMemoryNavigator) ReadNext(length uint) (r []bool) {
+func (mn SimpleArrayMemoryNavigator) Read(length uint) (r []bool) {
 	r = mn.memory.Read(mn.current, length)
 	mn.current += length
-	return r
-}
-
-func (mn SimpleArrayMemoryNavigator) Last() bool {
-	mn.current--
-	return mn.memory.Read(mn.current, 1)[0]
-}
-
-func (mn SimpleArrayMemoryNavigator) ReadLast(length uint64) (r []bool) {
-	r := sort.Reverse(mn.memory.Read(mn.current-length, length))
-	mn.current -= uint(length)
 	return r
 }
