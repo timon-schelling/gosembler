@@ -30,42 +30,42 @@ func (m SimpleArrayMemory) Write(address uint, values []bool) {
 	}
 }
 
-func (m SimpleArrayMemory) Navigator() Navigator {
+func (m SimpleArrayMemory) Navigator(address *uint) Navigator {
 	return SimpleArrayMemoryNavigator{
 		memory:  m,
-		current: 0,
+		current: address,
 	}
 }
 
 type SimpleArrayMemoryNavigator struct {
 	memory  SimpleArrayMemory
-	current uint
+	current *uint
 }
 
 func (mn SimpleArrayMemoryNavigator) Address() uint {
-	return mn.current
+	return *mn.current
 }
 
 func (mn SimpleArrayMemoryNavigator) Jump(address uint) {
-	mn.current = address
+	*mn.current = address
 }
 
 func (mn SimpleArrayMemoryNavigator) Skip() {
-	mn.current++
+	*mn.current++
 }
 
 func (mn SimpleArrayMemoryNavigator) Back() {
-	mn.current--
+	*mn.current--
 }
 
 func (mn SimpleArrayMemoryNavigator) Next() (r bool) {
-	r = mn.memory.Read(mn.current, 1)[0]
-	mn.current++
+	r = mn.memory.Read(*mn.current, 1)[0]
+	*mn.current++
 	return r
 }
 
 func (mn SimpleArrayMemoryNavigator) Read(length uint) (r []bool) {
-	r = mn.memory.Read(mn.current, length)
-	mn.current += length
+	r = mn.memory.Read(*mn.current, length)
+	*mn.current += length
 	return r
 }

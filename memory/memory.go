@@ -3,7 +3,7 @@ package memory
 type Memory interface {
 	Read(address uint, length uint) []bool
 	Write(address uint, value []bool)
-	Navigator() Navigator
+	Navigator(address *uint) Navigator
 }
 
 type Navigator interface {
