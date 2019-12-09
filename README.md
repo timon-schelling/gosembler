@@ -1,26 +1,52 @@
 # gosembler
 a assembler simulator written in go
 ## Assembler Standard
-### use memory address per bit
+
+### Assembler Syntax
+
+Line syntax: ```([label]:) (([instuction] ([parameter]) (,[parameter])) (;[comment])```
+
+Label syntax: ```.||[character]([alphanumeric]...)```
+
+Instructions: 
 ```
-00000000: 0
-00000001: 1
-00000002: 0
-00000003: 1
-00000004: 1
-00000005: 0
-00000006: 0
-00000007: 0
-00000008: 0
-00000009: 0
-0000000a: 0
-0000000b: 0
-0000000c: 0
-0000000d: 0
-0000000e: 0
-0000000f: 0
-00000010: 0
+DB
+MOV
+ADD
+SUB
+INC
+MUL
+DIV
+AND
+OR
+XOR
+NOT
+SHL
+SHR
+JMP
+JC
+JNC
+JZ
+JNZ
+JA
+JNA
+CALL
+RET
+PUSH
+POP
+HLT
 ```
+
+parameter: 
+```
+reg
+regAddress
+raw
+addressValue
+number
+string
+```
+
 ### opt code syntax
 
 #### 8 bit
